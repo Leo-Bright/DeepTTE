@@ -10,6 +10,7 @@ from torch.autograd import Variable
 
 EPS = 10
 
+
 class EntireEstimator(nn.Module):
     def __init__(self, input_size, num_final_fcs, hidden_size = 128):
         super(EntireEstimator, self).__init__()
@@ -44,6 +45,7 @@ class EntireEstimator(nn.Module):
         loss = torch.abs(pred - label) / label
 
         return {'label': label, 'pred': pred}, loss.mean()
+
 
 class LocalEstimator(nn.Module):
     def __init__(self, input_size):
@@ -112,7 +114,6 @@ class Net(nn.Module):
         self.entire_estimate = EntireEstimator(input_size =  self.spatio_temporal.out_size() + self.attr_net.out_size(), num_final_fcs = self.num_final_fcs, hidden_size = self.final_fc_size)
 
         self.local_estimate = LocalEstimator(input_size = self.spatio_temporal.out_size())
-
 
     def forward(self, attr, traj, config):
         attr_t = self.attr_net(attr)

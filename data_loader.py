@@ -8,6 +8,7 @@ from torch.utils.data import Dataset, DataLoader
 import numpy as np
 import ujson as json
 
+
 class MySet(Dataset):
     def __init__(self, input_file):
         self.content = open('./data/' + input_file, 'r').readlines()
@@ -19,6 +20,7 @@ class MySet(Dataset):
 
     def __len__(self):
         return len(self.content)
+
 
 def collate_fn(data):
     stat_attrs = ['dist', 'time']
@@ -54,6 +56,7 @@ def collate_fn(data):
 
     return attr, traj
 
+
 class BatchSampler:
     def __init__(self, dataset, batch_size):
         self.count = len(dataset)
@@ -86,6 +89,7 @@ class BatchSampler:
 
     def __len__(self):
         return (self.count + self.batch_size - 1) // self.batch_size
+
 
 def get_loader(input_file, batch_size):
     dataset = MySet(input_file = input_file)

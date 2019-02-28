@@ -44,6 +44,7 @@ args = parser.parse_args()
 
 config = json.load(open('./config.json', 'r'))
 
+
 def train(model, elogger, train_set, eval_set):
     # record the experiment setting
     elogger.log(str(model))
@@ -77,7 +78,8 @@ def train(model, elogger, train_set, eval_set):
                 loss.backward()
                 optimizer.step()
 
-                running_loss += loss.data[0]
+                # running_loss += loss.data[0]
+                running_loss += loss.item()
                 print '\r Progress {:.2f}%, average loss {}'.format((idx + 1) * 100.0 / len(data_iter), running_loss / (idx + 1.0)),
             print
             elogger.log('Training Epoch {}, File {}, Loss {}'.format(epoch, input_file, running_loss / (idx + 1.0)))
@@ -89,6 +91,7 @@ def train(model, elogger, train_set, eval_set):
         weight_name = '{}_{}'.format(args.log_file, str(datetime.datetime.now()))
         elogger.log('Save weight file {}'.format(weight_name))
         torch.save(model.state_dict(), './saved_weights/' + weight_name)
+
 
 def write_result(fs, pred_dict, attr):
     pred = pred_dict['pred'].data.cpu().numpy()
@@ -118,12 +121,14 @@ def evaluate(model, elogger, files, save_result = False):
 
             if save_result: write_result(fs, pred_dict, attr)
 
-            running_loss += loss.data[0]
+            # running_loss += loss.data[0]
+            running_loss += loss.item()
 
         print 'Evaluate on file {}, loss {}'.format(input_file, running_loss / (idx + 1.0))
         elogger.log('Evaluate File {}, Loss {}'.format(input_file, running_loss / (idx + 1.0)))
 
     if save_result: fs.close()
+
 
 def get_kwargs(model_class):
     model_args = inspect.getargspec(model_class.__init__).args
@@ -136,6 +141,7 @@ def get_kwargs(model_class):
             kwargs.pop(arg)
 
     return kwargs
+
 
 def run():
     # get the model arguments
@@ -156,6 +162,7 @@ def run():
         if torch.cuda.is_available():
             model.cuda()
         evaluate(model, elogger, config['test_set'], save_result = True)
+
 
 if __name__ == '__main__':
     run()

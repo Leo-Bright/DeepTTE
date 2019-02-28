@@ -7,6 +7,7 @@ import numpy as np
 
 from torch.autograd import Variable
 
+
 class Net(nn.Module):
     '''
     attr_size: the dimension of attr_net output
@@ -34,7 +35,6 @@ class Net(nn.Module):
                               batch_first = True
             )
 
-
         if pooling_method == 'attention':
             self.attr2atten = nn.Linear(attr_size, 128)
 
@@ -57,7 +57,6 @@ class Net(nn.Module):
 
         return hiddens
 
-
     def attent_pooling(self, hiddens, lens, attr_t):
         attent = F.tanh(self.attr2atten(attr_t)).permute(0, 2, 1)
 
@@ -73,7 +72,6 @@ class Net(nn.Module):
         hiddens = torch.squeeze(hiddens)
 
         return hiddens
-
 
     def forward(self, traj, attr_t, config):
         conv_locs = self.geo_conv(traj, config)
