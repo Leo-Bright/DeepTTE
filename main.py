@@ -114,6 +114,7 @@ def evaluate(model, elogger, files, save_result = False):
         running_loss = 0.0
         data_iter = data_loader.get_loader(input_file, args.batch_size)
 
+        # attr,traj in here are a batch size sample's
         for idx, (attr, traj) in enumerate(data_iter):
             attr, traj = utils.to_var(attr), utils.to_var(traj)
 
@@ -145,6 +146,7 @@ def get_kwargs(model_class):
 
 def run():
     # get the model arguments
+    # arguments value from command line input
     kwargs = get_kwargs(models.DeepTTE.Net)
 
     # model instance
